@@ -6,6 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A50341B22E09EBFC001A7608 /* MoleculeAR_ProApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50341B02E09EBFC001A7608 /* MoleculeAR_ProApp.swift */; };
+		A50341B32E09EBFC001A7608 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A50341AE2E09EBFC001A7608 /* Assets.xcassets */; };
+		A50341BC2E09EE23001A7608 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50341BB2E09EE17001A7608 /* RootView.swift */; };
+		A50341BE2E0A2BFD001A7608 /* AppPreferencesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50341BD2E0A2BA7001A7608 /* AppPreferencesViewModel.swift */; };
+		A50341C02E0A33E2001A7608 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50341BF2E0A33D1001A7608 /* SettingsView.swift */; };
+		A50341C22E0A3740001A7608 /* Molecule3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50341C12E0A372D001A7608 /* Molecule3DView.swift */; };
+		A50C06022E0A4DCE00BF5F02 /* MoleculeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50C06012E0A4DC900BF5F02 /* MoleculeViewModel.swift */; };
+		A50C06042E0B2ADD00BF5F02 /* AtomSelectionMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50C06032E0B2ACE00BF5F02 /* AtomSelectionMode.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		A522E93E2E09D372004D1386 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,17 +35,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A50341AE2E09EBFC001A7608 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A50341AF2E09EBFC001A7608 /* MoleculeAR_Pro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MoleculeAR_Pro.entitlements; sourceTree = "<group>"; };
+		A50341B02E09EBFC001A7608 /* MoleculeAR_ProApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoleculeAR_ProApp.swift; sourceTree = "<group>"; };
+		A50341BB2E09EE17001A7608 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		A50341BD2E0A2BA7001A7608 /* AppPreferencesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreferencesViewModel.swift; sourceTree = "<group>"; };
+		A50341BF2E0A33D1001A7608 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A50341C12E0A372D001A7608 /* Molecule3DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Molecule3DView.swift; sourceTree = "<group>"; };
+		A50C06012E0A4DC900BF5F02 /* MoleculeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoleculeViewModel.swift; sourceTree = "<group>"; };
+		A50C06032E0B2ACE00BF5F02 /* AtomSelectionMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomSelectionMode.swift; sourceTree = "<group>"; };
 		A522E92F2E09D371004D1386 /* MoleculeAR Pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MoleculeAR Pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A522E93D2E09D372004D1386 /* MoleculeAR ProTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MoleculeAR ProTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A522E9472E09D372004D1386 /* MoleculeAR ProUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MoleculeAR ProUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A522E9312E09D371004D1386 /* MoleculeAR Pro */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "MoleculeAR Pro";
-			sourceTree = "<group>";
-		};
 		A522E9402E09D372004D1386 /* MoleculeAR ProTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "MoleculeAR ProTests";
@@ -72,10 +87,66 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A50341B12E09EBFC001A7608 /* MoleculeAR Pro */ = {
+			isa = PBXGroup;
+			children = (
+				A50341AE2E09EBFC001A7608 /* Assets.xcassets */,
+				A50341B52E09ED0C001A7608 /* Models */,
+				A50341AF2E09EBFC001A7608 /* MoleculeAR_Pro.entitlements */,
+				A50341BA2E09EDA0001A7608 /* Utilities */,
+				A50341B92E09ED95001A7608 /* Services */,
+				A50341B62E09ED38001A7608 /* ViewModels */,
+				A50341B42E09EC03001A7608 /* Views */,
+				A50341B02E09EBFC001A7608 /* MoleculeAR_ProApp.swift */,
+			);
+			path = "MoleculeAR Pro";
+			sourceTree = "<group>";
+		};
+		A50341B42E09EC03001A7608 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A50341C12E0A372D001A7608 /* Molecule3DView.swift */,
+				A50341BF2E0A33D1001A7608 /* SettingsView.swift */,
+				A50341BB2E09EE17001A7608 /* RootView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A50341B52E09ED0C001A7608 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A50C06032E0B2ACE00BF5F02 /* AtomSelectionMode.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A50341B62E09ED38001A7608 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A50C06012E0A4DC900BF5F02 /* MoleculeViewModel.swift */,
+				A50341BD2E0A2BA7001A7608 /* AppPreferencesViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A50341B92E09ED95001A7608 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A50341BA2E09EDA0001A7608 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		A522E9262E09D371004D1386 = {
 			isa = PBXGroup;
 			children = (
-				A522E9312E09D371004D1386 /* MoleculeAR Pro */,
+				A50341B12E09EBFC001A7608 /* MoleculeAR Pro */,
 				A522E9402E09D372004D1386 /* MoleculeAR ProTests */,
 				A522E94A2E09D372004D1386 /* MoleculeAR ProUITests */,
 				A522E9302E09D371004D1386 /* Products */,
@@ -106,9 +177,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				A522E9312E09D371004D1386 /* MoleculeAR Pro */,
 			);
 			name = "MoleculeAR Pro";
 			packageProductDependencies = (
@@ -212,6 +280,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A50341B32E09EBFC001A7608 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +305,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A50341BC2E09EE23001A7608 /* RootView.swift in Sources */,
+				A50341C22E0A3740001A7608 /* Molecule3DView.swift in Sources */,
+				A50341C02E0A33E2001A7608 /* SettingsView.swift in Sources */,
+				A50341B22E09EBFC001A7608 /* MoleculeAR_ProApp.swift in Sources */,
+				A50C06022E0A4DCE00BF5F02 /* MoleculeViewModel.swift in Sources */,
+				A50341BE2E0A2BFD001A7608 /* AppPreferencesViewModel.swift in Sources */,
+				A50C06042E0B2ADD00BF5F02 /* AtomSelectionMode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
