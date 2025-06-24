@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct MoleculeAR_ProApp: App {
+    //@StateObject private var appPreferences = AppPreferencesViewModel()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            //ContentView()
         }
     }
 }
