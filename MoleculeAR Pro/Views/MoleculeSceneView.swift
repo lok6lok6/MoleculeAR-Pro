@@ -47,11 +47,19 @@ struct MoleculeSceneView: NSViewRepresentable {
             let hitResults = scnView.hitTest(point, options: [:])
             if let hit = hitResults.first {
                 print("🟢 Clicked node: \(String(describing: hit.node.name))")
-                // TODO: Call viewModel to update selection
+                
+                if let nodeName = hit.node.name,
+                   nodeName.starts(with: "Atom") {
+                    
+                    let components = nodeName.split(separator: " ")
+                    if components.count > 1,
+                       let index = Int(components[1]) {
+                        viewModel.selectAtom(index: index)
+                    }
+                }
             } else {
                 print("⚪️ Clicked background")
             }
         }
     }
 }
-
