@@ -18,15 +18,16 @@ struct Molecule3DView: View {
             Text("Molecule 3D Viewer")
                 .font(.title)
                 .padding()
-            SceneView(
-                scene: moleculeVM.scene,
-                pointOfView: nil,
-                options: [.autoenablesDefaultLighting, .allowsCameraControl],
-                preferredFramesPerSecond: 60,
-                antialiasingMode: .multisampling4X,
-                delegate: nil,
-                technique: nil
-            )
+//            SceneView(
+//                scene: moleculeVM.scene,
+//                pointOfView: nil,
+//                options: [.autoenablesDefaultLighting, .allowsCameraControl],
+//                preferredFramesPerSecond: 60,
+//                antialiasingMode: .multisampling4X,
+//                delegate: nil,
+//                technique: nil
+//            )
+            MoleculeSceneView(viewModel: moleculeVM)
             .frame(minHeight: 400)
             .cornerRadius(12)
             .padding()
