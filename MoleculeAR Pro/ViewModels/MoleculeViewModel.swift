@@ -85,25 +85,28 @@ final class MoleculeViewModel: ObservableObject {
     // with the loaded molecular data, including its own camera and lights.
     func buildScene(from data: MolecularData){
         let newScene = SCNScene()
-        //Add atoms as spheres
+        // Add atoms as spheres
         for (index, atom) in data.atoms.enumerated() {
             let sphere = SCNSphere(radius: 0.2)
             let baseColor = elementColor(for: atom.symbol)
-            
-            //If this atom is selected, use a glowing material
+
+            let material = SCNMaterial()
+            material.diffuse.contents = baseColor
+            material.lightingModel = .blinn // Use a lighting model that supports emission
+
             if index == selectedAtomIndex {
-                let highlightMaterial = SCNMaterial()
-                highlightMaterial.emission.contents = NSColor.systemYellow
-                highlightMaterial.diffuse.contents = baseColor
-                sphere.firstMaterial = highlightMaterial
-            }else {
-                sphere.firstMaterial?.diffuse.contents = baseColor
+                material.emission.contents = NSColor.systemYellow
+                material.emission.intensity = 1.0
+            } else {
+                material.emission.contents = NSColor.black
+                material.emission.intensity = 0.0
             }
-            
+
+            sphere.materials = [material]
+
             let node = SCNNode(geometry: sphere)
             node.position = SCNVector3(atom.position.x, atom.position.y, atom.position.z)
-            //Name the node for hit detection
-            node.name = "Atom \(index): \(atom.symbol)"
+            node.name = "Atom \(index) \(atom.symbol)"
             newScene.rootNode.addChildNode(node)
         }
         // Add bonds as cylinders
@@ -112,6 +115,7 @@ final class MoleculeViewModel: ObservableObject {
             let atom2 = data.atoms[bond.atom2Index]
             
             let bondNode = cylinderBetween(atom1.position, atom2.position)
+            bondNode.name = "Bond between Atoms \(bond.atom1Index) and \(bond.atom2Index)"
             newScene.rootNode.addChildNode(bondNode)
         }
         // --- IMPORTANT: Adding Camera to the new scene ---
@@ -193,5 +197,3 @@ final class MoleculeViewModel: ObservableObject {
         molecularData = nil
     }
 }
-
-
