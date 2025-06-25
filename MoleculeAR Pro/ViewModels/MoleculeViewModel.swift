@@ -86,7 +86,7 @@ final class MoleculeViewModel: ObservableObject {
     func buildScene(from data: MolecularData){
         let newScene = SCNScene()
         //Add atoms as spheres
-        for atom in data.atoms {
+        for (index, atom) in data.atoms.enumerated() {
             let sphere = SCNSphere(radius: 0.2)
             let color = elementColor(for: atom.symbol)
             sphere.firstMaterial?.diffuse.contents = color
@@ -94,8 +94,7 @@ final class MoleculeViewModel: ObservableObject {
             let node = SCNNode(geometry: sphere)
             node.position = SCNVector3(atom.position.x, atom.position.y, atom.position.z)
             //Name the node for hit detection
-            //node.name = "Atom \(index): \(atom.symbol)" old......
-            node.name = "Atom \(String(describing: index)): \(atom.symbol)"
+            node.name = "Atom \(index): \(atom.symbol)"
             newScene.rootNode.addChildNode(node)
         }
         // Add bonds as cylinders

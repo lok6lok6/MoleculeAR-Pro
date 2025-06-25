@@ -37,6 +37,10 @@ struct Atom: Codable {
     let id: UUID = UUID()
     let symbol: String
     let position: SIMD3<Float>
+    
+    enum CodingKeys: String, CodingKey {
+        case symbol, position
+    }
 }
 
 struct Bond: Codable {
@@ -44,4 +48,8 @@ struct Bond: Codable {
     let atom1Index: Int
     let atom2Index: Int
     let order: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case atom1Index, atom2Index, order
+    }
 }
