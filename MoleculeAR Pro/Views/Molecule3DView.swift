@@ -6,6 +6,9 @@
 //
 import SwiftUI
 import SceneKit
+#if os(macOS)
+import UniformTypeIdentifiers
+#endif
 
 struct Molecule3DView: View {
     @EnvironmentObject var moleculeVM: MoleculeViewModel
@@ -38,6 +41,12 @@ struct Molecule3DView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
+            #if os(macOS)
+            Button("Load Molecule from File") {
+                openFilePicker()
+            }
+            .padding()
+            #endif
             Button("Reload Example Molecule") {
                 loadExampleMolecule()
             }
@@ -55,6 +64,25 @@ struct Molecule3DView: View {
         moleculeVM.molecularData = MolecularData.example()
         moleculeVM.buildScene(from: MolecularData.example())
     }
+    
+    #if os(macOS)
+    private func openFilePicker() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [
+                UTType(filenameExtension: "mol")!,
+                UTType(filenameExtension: "sdf")!,
+                UTType(filenameExtension: "pdb")!,
+                UTType(filenameExtension: "xyz")!
+        ]
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.begin { response in
+            if response == .OK, let url = panel.url {
+                moleculeVM.loadMoleculeFile(from: url)
+            }
+        }
+    }
+    #endif
 }
 
 #Preview {

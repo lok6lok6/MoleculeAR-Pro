@@ -10,10 +10,16 @@ import SwiftUI
 @main
 struct MoleculeAR_ProApp: App {
     @StateObject private var appPreferences = AppPreferencesViewModel()
+    @StateObject private var moleculeVM = MoleculeViewModel()
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .environmentObject(appPreferences)
+            //Temporarily show Molecule3DView directly for testing
+            //RootView()
+                //.environmentObject(appPreferences)
+            Molecule3DView() // Temporary
+                .environmentObject(appPreferences) // Temporary
+                .environmentObject(moleculeVM) // Temporory
+                    
         }
     }
 }

@@ -93,6 +93,8 @@ final class MoleculeViewModel: ObservableObject {
             
             let node = SCNNode(geometry: sphere)
             node.position = SCNVector3(atom.position.x, atom.position.y, atom.position.z)
+            //Name the node for hit detection
+            node.name = "Atom \(index): \(atom.symbol)"
             newScene.rootNode.addChildNode(node)
         }
         // Add bonds as cylinders
