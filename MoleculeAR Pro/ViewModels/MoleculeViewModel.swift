@@ -88,8 +88,17 @@ final class MoleculeViewModel: ObservableObject {
         //Add atoms as spheres
         for (index, atom) in data.atoms.enumerated() {
             let sphere = SCNSphere(radius: 0.2)
-            let color = elementColor(for: atom.symbol)
-            sphere.firstMaterial?.diffuse.contents = color
+            let baseColor = elementColor(for: atom.symbol)
+            
+            //If this atom is selected, use a glowing material
+            if index == selectedAtomIndex {
+                let highlightMaterial = SCNMaterial()
+                highlightMaterial.emission.contents = NSColor.systemYellow
+                highlightMaterial.diffuse.contents = baseColor
+                sphere.firstMaterial = highlightMaterial
+            }else {
+                sphere.firstMaterial?.diffuse.contents = baseColor
+            }
             
             let node = SCNNode(geometry: sphere)
             node.position = SCNVector3(atom.position.x, atom.position.y, atom.position.z)
@@ -174,6 +183,12 @@ final class MoleculeViewModel: ObservableObject {
         
     }
     
+    func selectAtom(index: Int){
+        selectedAtomIndex = index
+        if let molecule = molecularData{
+            buildScene(from: molecule) // Rebuild the scene to apply the highlight
+        }
+    }
     func clearMolecule(){
         molecularData = nil
     }
