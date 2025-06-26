@@ -26,6 +26,12 @@ struct Molecule3DView: View {
             
             if let info = moleculeVM.selectedAtomInfo {
                 AtomInspectorView(info: info)
+                if moleculeVM.selectedAtomInfo != nil {
+                    Button("Clear Selection") {
+                        moleculeVM.clearSelection()
+                    }
+                    .padding(.bottom)
+                }
             }
             
             // 🧪 Debug info to see what's loaded

@@ -207,8 +207,16 @@ final class MoleculeViewModel: ObservableObject {
             buildScene(from: molecule) // Rebuild the scene to apply the highlight
         }
     }
+    
     func clearMolecule(){
         molecularData = nil
+    }
+    
+    func clearSelection(){
+        selectedAtomIndex = nil
+        if let molecule = molecularData{
+            buildScene(from: molecule) // Rebuild to remove glow
+        }
     }
 }
 

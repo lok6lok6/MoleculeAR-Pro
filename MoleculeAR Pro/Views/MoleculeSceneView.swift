@@ -45,21 +45,22 @@ struct MoleculeSceneView: NSViewRepresentable {
             let point = gesture.location(in: scnView)
             
             let hitResults = scnView.hitTest(point, options: [:])
-            if let hit = hitResults.first {
-                print("🟢 Clicked node: \(String(describing: hit.node.name))")
+            if let hit = hitResults.first, let name = hit.node.name {
+                //print("🟢 Clicked node: \(String(describing: hit.node.name))")
+                //Parse atom index from node name
                 
-                if let nodeName = hit.node.name,
-                   nodeName.starts(with: "Atom") {
-                    
-                    let components = nodeName.split(separator: " ")
-                    if components.count > 1,
+                if name.starts(with: "Atom") {
+                    let components = name.split(separator: " ")
+                    if components.count > 2,
                        let index = Int(components[1]) {
+                        print("🟢 Selected atom index: \(index)")
                         viewModel.selectAtom(index: index)
+                        return
                     }
                 }
-            } else {
-                print("⚪️ Clicked background")
             }
+            print("⚪️ Clicked background")
+            viewModel.clearSelection()
         }
     }
 }
