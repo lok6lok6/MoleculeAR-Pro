@@ -15,43 +15,50 @@ struct Molecule3DView: View {
     
     var body: some View {
         VStack{
-            Text("Molecule 3D Viewer")
-                .font(.title)
-                .padding()
-
-            MoleculeSceneView(viewModel: moleculeVM)
-            .frame(minHeight: 400)
-            .cornerRadius(12)
-            .padding()
-            
-            if let info = moleculeVM.selectedAtomInfo {
-                AtomInspectorView(info: info)
-                if moleculeVM.selectedAtomInfo != nil {
-                    Button("Clear Selection") {
-                        moleculeVM.clearSelection()
+            ZStack(alignment: .bottomTrailing) {
+                MoleculeSceneView(viewModel: moleculeVM)
+                    .edgesIgnoringSafeArea(.all)
+                
+                if let info = moleculeVM.selectedAtomInfo {
+                    VStack(alignment: .trailing, spacing: 8) {
+                        AtomInspectorView(info: info)
+                        
+                        Button("Clear Selection") {
+                            moleculeVM.clearSelection()
+                        }
+                        .buttonStyle(.borderedProminent)
                     }
-                    .padding(.bottom)
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(12)
+                    .padding([.trailing, .bottom], 16)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .animation(.easeInOut, value: info.index)
                 }
             }
             
-            // 🧪 Debug info to see what's loaded
-            if let molecule = moleculeVM.molecularData {
-                Text("Molecule loaded: \(molecule.atoms.count) atoms, \(molecule.bonds.count) bonds")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }else{
-                Text("No molecule loaded yet")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            #if os(macOS)
-            Button("Load Molecule from File") {
-                openFilePicker()
-            }
-            .padding()
-            #endif
-            Button("Reload Example Molecule") {
-                loadExampleMolecule()
+            VStack(spacing: 4) {
+                // 🧪 Debug info to see what's loaded
+                if let molecule = moleculeVM.molecularData {
+                    Text("Molecule loaded: \(molecule.atoms.count) atoms, \(molecule.bonds.count) bonds")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }else{
+                    Text("No molecule loaded yet")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                #if os(macOS)
+                Button("Load Molecule from File") {
+                    openFilePicker()
+                }
+                .padding(.top)
+                #endif
+                
+                Button("Reload Example Molecule") {
+                    loadExampleMolecule()
+                }
+                .padding()
             }
             .padding()
         }
