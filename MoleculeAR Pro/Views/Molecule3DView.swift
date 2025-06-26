@@ -15,14 +15,34 @@ struct Molecule3DView: View {
     
     var body: some View {
         VStack{
+            Text("Molecule 3D Viewer")
+                .font(.title)
+                .padding()
+            
+            Picker("Interaction", selection: $moleculeVM.interactionMode) {
+                ForEach(InteractionMode.allCases) { mode in
+                    Text(mode.rawValue).tag(mode)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding([.horizontal, .top])
+            
+           Picker("Selection", selection: $moleculeVM.selectionMode) {
+                ForEach(AtomSelectionMode.allCases) { mode in
+                    Text(mode.rawValue).tag(mode)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding([.horizontal, .top])
+            
             ZStack(alignment: .bottomTrailing) {
                 MoleculeSceneView(viewModel: moleculeVM)
                     .edgesIgnoringSafeArea(.all)
                 
-                if let info = moleculeVM.selectedAtomInfo {
+                if moleculeVM.interactionMode == .inspect, let info = moleculeVM.selectedAtomInfo {
                     VStack(alignment: .trailing, spacing: 8) {
                         AtomInspectorView(info: info)
-                        
+
                         Button("Clear Selection") {
                             moleculeVM.clearSelection()
                         }

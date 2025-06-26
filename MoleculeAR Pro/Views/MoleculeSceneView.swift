@@ -53,6 +53,7 @@ struct MoleculeSceneView: NSViewRepresentable {
                     let components = name.split(separator: " ")
                     if components.count > 2,
                        let index = Int(components[1]) {
+                        print("🔘 Current Mode: \(viewModel.interactionMode)")
                         print("🟢 Selected atom index: \(index)")
                         viewModel.selectAtom(index: index)
                         return

@@ -16,6 +16,7 @@ final class MoleculeViewModel: ObservableObject {
     @Published var selectedAtomIndex: Int? = nil
     @Published var selectionMode: AtomSelectionMode = .none
     @Published var scene: SCNScene = SCNScene()
+    @Published var interactionMode: InteractionMode = .inspect
     
     var selectedAtomInfo: SelectedAtomInfo? {
         guard let index = selectedAtomIndex,
