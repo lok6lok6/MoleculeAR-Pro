@@ -17,6 +17,20 @@ final class MoleculeViewModel: ObservableObject {
     @Published var selectionMode: AtomSelectionMode = .none
     @Published var scene: SCNScene = SCNScene()
     
+    var selectedAtomInfo: SelectedAtomInfo? {
+        guard let index = selectedAtomIndex,
+              let data = molecularData,
+              index < data.atoms.count else {
+            return nil
+        }
+        let atom = data.atoms[index]
+        return SelectedAtomInfo(
+            symbol: atom.symbol,
+            index: index,
+            position: atom.position
+        )
+    }
+    
     // MARK: - Init
     init(){
         // The initial scene setup is mainly for a placeholder or a default view
@@ -195,5 +209,22 @@ final class MoleculeViewModel: ObservableObject {
     }
     func clearMolecule(){
         molecularData = nil
+    }
+}
+
+struct SelectedAtomInfo {
+    let symbol: String
+    let index: Int
+    let position: SIMD3<Float>
+    var atomicNumber: Int? {
+        // I can add a smarter lookup later
+        switch symbol.uppercased() {
+        case "H": return 1
+        case "C": return 6
+        case "N": return 7
+        case "O": return 8
+        case "S": return 16
+        default: return nil
+        }
     }
 }
