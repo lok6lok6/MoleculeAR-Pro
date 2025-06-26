@@ -17,6 +17,9 @@ final class MoleculeViewModel: ObservableObject {
     @Published var selectionMode: AtomSelectionMode = .none
     @Published var scene: SCNScene = SCNScene()
     @Published var interactionMode: InteractionMode = .inspect
+    @Published var selectedAtomIndices: Set<Int> = []
+    @Published var dragStart: CGPoint? = nil // Where user starts to drag for selection
+    @Published var dragEnd: CGPoint? = nil // Where user end to drag for selection
     
     var selectedAtomInfo: SelectedAtomInfo? {
         guard let index = selectedAtomIndex,
@@ -215,9 +218,75 @@ final class MoleculeViewModel: ObservableObject {
     
     func clearSelection(){
         selectedAtomIndex = nil
+        selectedAtomIndices.removeAll()
         if let molecule = molecularData{
             buildScene(from: molecule) // Rebuild to remove glow
         }
+    }
+    
+    func updateGlowForSelectedAtoms(){
+        guard let molecule = molecularData else { return }
+        let newScene = SCNScene()
+        
+        for (index, atom) in molecule.atoms.enumerated() {
+            let sphere = SCNSphere(radius: 0.2)
+            let baseColor = elementColor(for: atom.symbol)
+            
+            let material = SCNMaterial()
+            material.diffuse.contents = baseColor
+            material.lightingModel = .blinn
+            
+            if selectedAtomIndices.contains(index) {
+                material.emission.contents = NSColor.systemYellow
+                material.emission.intensity = 1.0
+            }else{
+                material.emission.contents = NSColor.black
+                material.emission.intensity = 0.0
+            }
+            sphere.materials = [material]
+            
+            let node = SCNNode(geometry: sphere)
+            node.position = SCNVector3(atom.position.x, atom.position.y, atom.position.z)
+            node.name = "Atom \(index) \(atom.symbol)"
+            newScene.rootNode.addChildNode(node)
+        }
+        
+        for bond in molecule.bonds {
+            let atom1 = molecule.atoms[bond.atom1Index]
+            let atom2 = molecule.atoms[bond.atom2Index]
+            let bondNode = cylinderBetween(atom1.position, atom2.position)
+            bondNode.name = "Bond between Atoms \(bond.atom1Index) and \(bond.atom2Index)"
+            newScene.rootNode.addChildNode(bondNode)
+        }
+        
+        // Add camera, lights, and background as before
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        cameraNode.position = SCNVector3(0, 0, 10)
+        newScene.rootNode.addChildNode(cameraNode)
+        
+        let lightNode = SCNNode()
+        lightNode.light = SCNLight()
+        lightNode.light?.type = .omni
+        lightNode.position = SCNVector3(0, 5, 5)
+        newScene.rootNode.addChildNode(lightNode)
+        
+        let ambientLight = SCNNode()
+        ambientLight.light = SCNLight()
+        ambientLight.light?.type = .ambient
+        ambientLight.light?.color = NSColor.darkGray
+        newScene.rootNode.addChildNode(ambientLight)
+        
+        self.scene = newScene
+    }
+    
+    func toggleAtomSelection(index: Int){
+        if selectedAtomIndices.contains(index) {
+            selectedAtomIndices.remove(index)
+        }else{
+            selectedAtomIndices.insert(index)
+        }
+        updateGlowForSelectedAtoms()
     }
 }
 
