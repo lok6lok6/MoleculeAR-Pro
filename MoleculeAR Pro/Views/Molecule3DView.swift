@@ -43,14 +43,14 @@ struct Molecule3DView: View {
                             if moleculeVM.selectionMode == .box,
                                let rect = moleculeVM.dragBox {
 
-                                //let flippedY = geo.size.height - rect.origin.y - rect.size.height
+                                let flippedY = geo.size.height - rect.origin.y - rect.size.height
 
                                 Rectangle()
                                     .stroke(Color.yellow, lineWidth: 2)
                                     .background(Color.yellow.opacity(0.2))
                                     .frame(width: rect.width, height: rect.height)
-                                    .position(x: rect.origin.x + rect.width / 2, y: rect.origin.y + rect.height / 2) // Changed this line
-                                    //.position(x: rect.origin.x + rect.width / 2, y: flippedY + rect.height / 2)
+                                    //.position(x: rect.origin.x + rect.width / 2, y: rect.origin.y + rect.height / 2) // Changed this line
+                                    .position(x: rect.origin.x + rect.width / 2, y: flippedY + rect.height / 2)
                                     .allowsHitTesting(false) // ✅ Don't block mouse input to SceneKit
                                     .animation(.easeInOut(duration: 0.05), value: rect)
                             }
