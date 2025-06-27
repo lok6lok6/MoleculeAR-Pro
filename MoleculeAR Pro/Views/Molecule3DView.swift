@@ -12,13 +12,13 @@ import UniformTypeIdentifiers
 
 struct Molecule3DView: View {
     @EnvironmentObject var moleculeVM: MoleculeViewModel
-    
+
     var body: some View {
         VStack{
             Text("Molecule 3D Viewer")
                 .font(.title)
                 .padding()
-            
+
             Picker("Interaction", selection: $moleculeVM.interactionMode) {
                 ForEach(InteractionMode.allCases) { mode in
                     Text(mode.rawValue).tag(mode)
@@ -26,19 +26,37 @@ struct Molecule3DView: View {
             }
             .pickerStyle(.segmented)
             .padding([.horizontal, .top])
-            
-           Picker("Selection", selection: $moleculeVM.selectionMode) {
+
+            Picker("Selection", selection: $moleculeVM.selectionMode) {
                 ForEach(AtomSelectionMode.allCases) { mode in
                     Text(mode.rawValue).tag(mode)
                 }
             }
             .pickerStyle(.segmented)
             .padding([.horizontal, .top])
-            
+
             ZStack(alignment: .bottomTrailing) {
                 MoleculeSceneView(viewModel: moleculeVM)
                     .edgesIgnoringSafeArea(.all)
-                
+                    .overlay(
+                        GeometryReader { geo in
+                            if moleculeVM.selectionMode == .box,
+                               let rect = moleculeVM.dragBox {
+
+                                //let flippedY = geo.size.height - rect.origin.y - rect.size.height
+
+                                Rectangle()
+                                    .stroke(Color.yellow, lineWidth: 2)
+                                    .background(Color.yellow.opacity(0.2))
+                                    .frame(width: rect.width, height: rect.height)
+                                    .position(x: rect.origin.x + rect.width / 2, y: rect.origin.y + rect.height / 2) // Changed this line
+                                    //.position(x: rect.origin.x + rect.width / 2, y: flippedY + rect.height / 2)
+                                    .allowsHitTesting(false) // ✅ Don't block mouse input to SceneKit
+                                    .animation(.easeInOut(duration: 0.05), value: rect)
+                            }
+                        }
+                    )
+
                 if moleculeVM.interactionMode == .inspect, let info = moleculeVM.selectedAtomInfo {
                     VStack(alignment: .trailing, spacing: 8) {
                         AtomInspectorView(info: info)
@@ -56,14 +74,13 @@ struct Molecule3DView: View {
                     .animation(.easeInOut, value: info.index)
                 }
             }
-            
+
             VStack(spacing: 4) {
-                // 🧪 Debug info to see what's loaded
                 if let molecule = moleculeVM.molecularData {
                     Text("Molecule loaded: \(molecule.atoms.count) atoms, \(molecule.bonds.count) bonds")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                }else{
+                } else {
                     Text("No molecule loaded yet")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -74,7 +91,7 @@ struct Molecule3DView: View {
                 }
                 .padding(.top)
                 #endif
-                
+
                 Button("Reload Example Molecule") {
                     loadExampleMolecule()
                 }
@@ -83,26 +100,23 @@ struct Molecule3DView: View {
             .padding()
         }
         .onAppear {
-            // Load the example CO molecule when the view appears
             loadExampleMolecule()
         }
     }
-    
+
     private func loadExampleMolecule() {
-        //Since MoleculeParser.parce() returns MolecularData.example(),
-        //I can simulate loading from a "file" URL
         moleculeVM.molecularData = MolecularData.example()
         moleculeVM.buildScene(from: MolecularData.example())
     }
-    
+
     #if os(macOS)
     private func openFilePicker() {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [
-                UTType(filenameExtension: "mol")!,
-                UTType(filenameExtension: "sdf")!,
-                UTType(filenameExtension: "pdb")!,
-                UTType(filenameExtension: "xyz")!
+            UTType(filenameExtension: "mol")!,
+            UTType(filenameExtension: "sdf")!,
+            UTType(filenameExtension: "pdb")!,
+            UTType(filenameExtension: "xyz")!
         ]
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false

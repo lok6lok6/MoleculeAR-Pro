@@ -35,6 +35,15 @@ final class MoleculeViewModel: ObservableObject {
         )
     }
     
+    // Added a computed property to extend MoleculeViewModel with Drag Box Frame
+    // This gives me a live-updating rectangle
+    var dragBox: CGRect? {
+        guard let start = dragStart, let end = dragEnd else { return nil }
+        let origin = CGPoint(x: min(start.x, end.x), y: min(start.y, end.y))
+        let size = CGSize(width: abs(end.x - start.x), height: abs(end.y - start.y))
+        return CGRect(origin: origin, size: size)
+    }
+    
     // MARK: - Init
     init(){
         // The initial scene setup is mainly for a placeholder or a default view
@@ -103,6 +112,16 @@ final class MoleculeViewModel: ObservableObject {
     // with the loaded molecular data, including its own camera and lights.
     func buildScene(from data: MolecularData){
         let newScene = SCNScene()
+        
+        // --- IMPORTANT: Adding Camera to the new scene ---
+        // Without a camera, you wouldn't be able to see the molecule!
+        let cameraNode = SCNNode()
+        cameraNode.name = "MainCamera"
+        cameraNode.camera = SCNCamera()
+        // Position the camera to view the molecule. Adjust as needed for molecule size.
+        cameraNode.position = SCNVector3(0, 0, 10) // Moved slightly back for better initial view
+        newScene.rootNode.addChildNode(cameraNode)
+        
         // Add atoms as spheres
         for (index, atom) in data.atoms.enumerated() {
             let sphere = SCNSphere(radius: 0.2)
@@ -136,13 +155,7 @@ final class MoleculeViewModel: ObservableObject {
             bondNode.name = "Bond between Atoms \(bond.atom1Index) and \(bond.atom2Index)"
             newScene.rootNode.addChildNode(bondNode)
         }
-        // --- IMPORTANT: Adding Camera to the new scene ---
-        // Without a camera, you wouldn't be able to see the molecule!
-        let cameraNode = SCNNode()
-        cameraNode.camera = SCNCamera()
-        // Position the camera to view the molecule. Adjust as needed for molecule size.
-        cameraNode.position = SCNVector3(0, 0, 10) // Moved slightly back for better initial view
-        newScene.rootNode.addChildNode(cameraNode)
+        
         
         // --- IMPORTANT: Adding Light to the new scene ---
         // Without light, the molecule would be completely dark!
