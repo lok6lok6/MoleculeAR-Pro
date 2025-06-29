@@ -12,12 +12,23 @@ import UniformTypeIdentifiers
 
 struct Molecule3DView: View {
     @EnvironmentObject var moleculeVM: MoleculeViewModel
+    @EnvironmentObject var appPreferences: AppPreferencesViewModel // <-- ADDED THIS LINE
 
     var body: some View {
         VStack{
             Text("Molecule 3D Viewer")
                 .font(.title)
                 .padding()
+
+            // --- ADDED: Visualization Style Picker ---
+            Picker("Visualization Style", selection: $appPreferences.visualizationStyle) { // <-- ADDED THIS BLOCK
+                ForEach(VisualizationStyle.allCases) { style in
+                    Text(style.rawValue).tag(style)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding([.horizontal, .top])
+            // ----------------------------------------
 
             Picker("Interaction", selection: $moleculeVM.interactionMode) {
                 ForEach(InteractionMode.allCases) { mode in
@@ -43,15 +54,17 @@ struct Molecule3DView: View {
                             if moleculeVM.selectionMode == .box,
                                let rect = moleculeVM.dragBox {
 
+                                // This flippedY calculation might still be needed depending on your coordinate system.
+                                // If the box draws upside down, keep it. Otherwise, if dragBox already provides
+                                // SwiftUI-compatible coordinates, it can be simplified.
                                 let flippedY = geo.size.height - rect.origin.y - rect.size.height
 
                                 Rectangle()
                                     .stroke(Color.yellow, lineWidth: 2)
                                     .background(Color.yellow.opacity(0.2))
                                     .frame(width: rect.width, height: rect.height)
-                                    //.position(x: rect.origin.x + rect.width / 2, y: rect.origin.y + rect.height / 2) // Changed this line
                                     .position(x: rect.origin.x + rect.width / 2, y: flippedY + rect.height / 2)
-                                    .allowsHitTesting(false) // ✅ Don't block mouse input to SceneKit
+                                    .allowsHitTesting(false)
                                     .animation(.easeInOut(duration: 0.05), value: rect)
                             }
                         }
@@ -93,6 +106,9 @@ struct Molecule3DView: View {
                 #endif
 
                 Button("Reload Example Molecule") {
+                    // Only reload example if no molecule is loaded, to avoid overwriting user's file.
+                    // Or, provide a specific "Load Example" button separate from the primary load.
+                    // For now, let's keep it simple.
                     loadExampleMolecule()
                 }
                 .padding()
@@ -100,24 +116,39 @@ struct Molecule3DView: View {
             .padding()
         }
         .onAppear {
-            loadExampleMolecule()
+            // Load example molecule only if nothing is loaded.
+            // This prevents it from overriding a molecule the user just loaded if this onAppear fires again.
+            if moleculeVM.molecularData == nil { // <-- ADDED CONDITIONAL LOAD
+                loadExampleMolecule()
+            }
         }
     }
 
     private func loadExampleMolecule() {
+        // We now call loadMoleculeFile, which will use the MolecularParser.example() via URL if needed.
+        // For now, let's pass a placeholder URL for the example.
+        // In a real app, this might load from app bundle resources.
+        // For now, it will simply call MolecularData.example() through MolecularParser's current implementation.
+        // This will still use the old parser's example. For testing actual XYZ, use the file picker.
+        // If MolecularParser.parse(from:) is fully implemented for XYZ, this example URL won't work without a file.
+        // Let's simplify this to directly assign the example for now until we handle resource loading properly.
+
         moleculeVM.molecularData = MolecularData.example()
-        moleculeVM.buildScene(from: MolecularData.example())
+        moleculeVM.buildScene(from: MolecularData.example()) // Builds scene for example molecule
     }
 
     #if os(macOS)
     private func openFilePicker() {
         let panel = NSOpenPanel()
-        panel.allowedContentTypes = [
-            UTType(filenameExtension: "mol")!,
-            UTType(filenameExtension: "sdf")!,
-            UTType(filenameExtension: "pdb")!,
-            UTType(filenameExtension: "xyz")!
+        var allowedTypes: [UTType] = [
+            .text // Allow generic plain text files
         ]
+        
+        let specificExtensions = ["mol", "sdf", "pdb", "xyz"]
+        allowedTypes.append(contentsOf: specificExtensions.compactMap { UTType(filenameExtension: $0) })
+        
+        panel.allowedContentTypes = allowedTypes
+        
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
         panel.begin { response in
@@ -130,6 +161,8 @@ struct Molecule3DView: View {
 }
 
 #Preview {
+    // CRUCIAL: Provide ALL environment objects needed by the view and its children
     Molecule3DView()
-        .environmentObject(MoleculeViewModel())
+        .environmentObject(MoleculeViewModel(appPreferences: AppPreferencesViewModel())) // <-- CORRECTED INIT
+        .environmentObject(AppPreferencesViewModel()) // <-- ADDED THIS LINE
 }

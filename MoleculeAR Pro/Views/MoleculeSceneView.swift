@@ -55,6 +55,7 @@ struct MoleculeSceneView: NSViewRepresentable {
         Coordinator(viewModel: viewModel)
     }
     
+    @MainActor
     class Coordinator: NSObject {
         var viewModel: MoleculeViewModel
         weak var scnView: SCNView? // Keep a weak reference to the SCNView
@@ -202,7 +203,7 @@ struct MoleculeSceneView: NSViewRepresentable {
                 }
             }
             
-            // Instead of just adding, let's replace the selection if it's a new box drag.
+            // Instead of just adding, replace the selection if it's a new box drag.
             // If the user performs another box drag, it typically implies a new selection.
             // If we want "add to selection" for box, we would need a modifier key (e.g., Shift+Drag)
             // For now, let's assume a new box drag means a new selection.

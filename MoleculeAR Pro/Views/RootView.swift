@@ -7,30 +7,31 @@
 import SwiftUI
 
 struct RootView: View {
+    // Inject environment objects that RootView (or its children) will need
+    @EnvironmentObject var appPreferences: AppPreferencesViewModel // <-- ADDED THIS
+    @EnvironmentObject var moleculeVM: MoleculeViewModel // <-- ADDED THIS
+
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20){
-                Text("Welcome to MoleculeAR Pro")
-                    .font(.largeTitle)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                
-                Text("Start building your molecular world in 3D and AR!")
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-                
-                Spacer()
+            VStack {
+                // Molecule3DView is now the main content
+                Molecule3DView() // This view correctly picks up @EnvironmentObjects from its ancestors.
+
+                // Example of how you might navigate to settings later
+                NavigationLink("Settings") {
+                    SettingsView()
+                        // SettingsView already uses @EnvironmentObject, so it will receive `preferences`
+                        // from the environment provided by MoleculeAR_ProApp (via this RootView)
+                }
+                .padding()
             }
-            .padding()
-#if os(MacOS)
-            .frame(minWidth: 600, minHeight: 400)
-#else
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-#endif
         }
     }
 }
 
 #Preview {
+    // CRUCIAL: Provide ALL environment objects needed by the preview
     RootView()
+        .environmentObject(AppPreferencesViewModel()) // <-- ADDED THIS
+        .environmentObject(MoleculeViewModel(appPreferences: AppPreferencesViewModel())) // <-- ADDED THIS, matching app's init
 }
